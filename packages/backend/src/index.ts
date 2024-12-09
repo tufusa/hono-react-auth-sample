@@ -7,6 +7,9 @@ import { jwt, sign } from "hono/jwt";
 import { secureHeaders } from "hono/secure-headers";
 
 export type Bindings = {
+  ENVIRONMENT: "development" | "production";
+  USERNAME: string;
+  PASSWORD: string;
   JWT_SECRET: string;
   COOKIE_KEY: string;
   COOKIE_SECRET: string;
@@ -22,14 +25,17 @@ app.use(
       "http://localhost:5173",
       "https://hono-react-auth-sample.pages.dev",
     ],
+    credentials: true,
   })
 );
 app.get(
   "/auth",
-  basicAuth({
-    username: "admin",
-    password: "password",
-  }),
+  async (c, next) => {
+    return basicAuth({
+      username: c.env.USERNAME,
+      password: c.env.PASSWORD,
+    })(c, next);
+  },
   async (c) => {
     const token = await sign({}, c.env.JWT_SECRET);
     setSignedCookie(c, c.env.COOKIE_KEY, token, c.env.COOKIE_SECRET, {
@@ -38,7 +44,7 @@ app.get(
       secure: true,
       maxAge: 60 * 5, // 5 min
       sameSite: "strict",
-      prefix: "host",
+      prefix: c.env.ENVIRONMENT == "production" ? "host" : undefined,
     });
     return c.json({ message: "Authenticated" });
   }
@@ -49,7 +55,7 @@ app.use("*", except("/auth"), (c, next) =>
     cookie: {
       key: c.env.COOKIE_KEY,
       secret: c.env.COOKIE_SECRET,
-      prefixOptions: "host",
+      prefixOptions: c.env.ENVIRONMENT == "production" ? "host" : undefined,
     },
   })(c, next)
 );
