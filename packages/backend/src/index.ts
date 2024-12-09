@@ -37,7 +37,12 @@ app.get(
     })(c, next);
   },
   async (c) => {
-    const token = await sign({}, c.env.JWT_SECRET);
+    const token = await sign({
+      sub: "admin",
+      iss: "hono-react-auth-sample-backend",
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 5, // 5 min
+    }, c.env.JWT_SECRET);
     setSignedCookie(c, c.env.COOKIE_KEY, token, c.env.COOKIE_SECRET, {
       path: "/",
       httpOnly: true,
