@@ -1,8 +1,8 @@
 {
   "name": "backend",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify --keep-vars --env production"
+    "dev": "wrangler dev --env development",
+    "deploy": "wrangler deploy --minify --keep-vars"
   },
   "dependencies": {
     "hono": "^4.6.13"

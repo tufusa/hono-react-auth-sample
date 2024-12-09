@@ -1,7 +1,7 @@
 name = "hono-react-auth-sample-backend"
 main = "src/index.ts"
 compatibility_date = "2024-12-09"
-vars = { ENVIRONMENT = "development" }
-
-[env.production]
 vars = { ENVIRONMENT = "production" }
+
+[env.development]
+vars = { ENVIRONMENT = "development" }
