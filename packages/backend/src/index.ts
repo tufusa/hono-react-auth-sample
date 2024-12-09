@@ -43,7 +43,7 @@ app.get(
       httpOnly: true,
       secure: true,
       maxAge: 60 * 5, // 5 min
-      sameSite: "strict",
+      sameSite: "none",
       prefix: c.env.ENVIRONMENT == "production" ? "host" : undefined,
     });
     return c.json({ message: "Authenticated" });
